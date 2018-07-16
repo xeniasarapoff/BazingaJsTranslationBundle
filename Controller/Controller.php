@@ -177,11 +177,15 @@ class Controller
             200,
             array('Content-Type' => $request->getMimeType($_format))
         );
+        
+        // Somehow sometimes the content gets overriden in other methods and becomes blank. Make sure its overwritten at the very end.
+        $content = $response->getContent();
         $response->prepare($request);
         $response->setPublic();
         $response->setETag(md5($response->getContent()));
         $response->isNotModified($request);
         $response->setExpires($expirationTime);
+        $response->setContent($content);
 
         return $response;
     }
